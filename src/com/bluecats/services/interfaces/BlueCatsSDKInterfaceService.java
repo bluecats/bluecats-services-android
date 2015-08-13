@@ -27,6 +27,7 @@ import com.bluecats.sdk.BCTrigger;
 import com.bluecats.sdk.BCTriggeredEvent;
 import com.bluecats.sdk.BlueCatsSDK;
 import com.bluecats.sdk.IBCEventFilter;
+import com.bluecats.sdk.BCBeacon.BCProximity;
 import com.bluecats.services.MainActivity;
 
 import android.app.NotificationManager;
@@ -173,12 +174,21 @@ public class BlueCatsSDKInterfaceService extends Service {
 	private BCEventManagerCallback mEventManagerCallback = new BCEventManagerCallback() {
 		@Override
 		public void onTriggeredEvent(final BCTriggeredEvent triggeredEvent) {
+			Log.d(TAG, "onTriggeredEvent" + triggeredEvent.getEvent().getEventIdentifier());
+			
 			if (triggeredEvent.getEvent().getEventIdentifier().equals(EVENT_HEARD_BEACON)) {
 				// if there are no callbacks registered the the app is probably closed or in the background
 				// send a local notification to wake the app up
 				if (getBlueCatsSDKServiceCallbacks().size() == 0) {
+					// if closest beacon is unknown dont fire notification
+					if (triggeredEvent.getFilteredMicroLocation().getBeacons().size() > 0) {
+						BCBeacon closestBeacon = triggeredEvent.getFilteredMicroLocation().getBeacons().get(0);
+						if (closestBeacon.getProximity() == BCProximity.BC_PROXIMITY_UNKNOWN) {
+							return;
+						}
+					}
+					
 					Intent mainActivityIntent = new Intent(getServiceContext(), MainActivity.class);
-
 					TaskStackBuilder stackBuilder = TaskStackBuilder.create(getServiceContext());
 					stackBuilder.addParentStack(mainActivityIntent.getComponent());
 					stackBuilder.addNextIntent(mainActivityIntent);
@@ -289,6 +299,8 @@ public class BlueCatsSDKInterfaceService extends Service {
 
 		@Override
 		public void onDidUpdateNearbySites(final List<BCSite> sites) {
+			Log.d(TAG, "onDidUpdateNearbySites");
+			
 			// handle logic here or return the event to your activity
 			Iterator<Entry<String, IBlueCatsSDKInterfaceServiceCallback>> iterator = getBlueCatsSDKServiceCallbacks().entrySet().iterator();
 			while (iterator.hasNext()) {
