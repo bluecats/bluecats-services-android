@@ -312,6 +312,18 @@ public class BlueCatsSDKInterfaceService extends Service {
 				}
 			}
 		}
+
+		@Override
+		public void didBeginVisitForBeaconsWithSerialNumbers(List<String> arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void didEndVisitForBeaconsWithSerialNumbers(List<String> arg0) {
+			// TODO Auto-generated method stub
+			
+		}
 	};
 
 	public class LocalBinder extends Binder {
