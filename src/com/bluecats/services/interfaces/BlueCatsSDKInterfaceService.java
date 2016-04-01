@@ -90,7 +90,7 @@ public class BlueCatsSDKInterfaceService extends Service {
 
 		// add any options here
 		Map<String, String> options = new HashMap<String, String>();
-		options.put(BlueCatsSDK.BC_OPTION_CROWD_SOURCE_BEACON_UPDATES, "false");
+//		options.put(BlueCatsSDK.BC_OPTION_CROWD_SOURCE_BEACON_UPDATES, "false");
 		BlueCatsSDK.setOptions(options);
 
 		BlueCatsSDK.startPurringWithAppToken(getApplicationContext(), appToken);

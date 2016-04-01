@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+    defaultConfig {
+        applicationId "com.bluecats.services"
+        minSdkVersion 18
+        targetSdkVersion 22
+        versionCode 101010
+        versionName "1.1.1"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-project.txt'
+        }
+        debug {
+            debuggable true
+            jniDebuggable true
+        }
+    }
+    sourceSets {
+        main.setRoot('..')
+        main.manifest.srcFile '../AndroidManifest.xml'
+        main.java.srcDirs = ['../src']
+        main.jniLibs.srcDirs = ['../libs']
+    }
+    productFlavors {
+        withaar {
+        }
+        withsrc {
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+configurations {
+    withaarDebugCompile
+    withsrcDebugCompile
+    withaarReleaseCompile
+    withsrcReleaseCompile
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.google.android.gms:play-services:8.+'
+
+    withsrcReleaseCompile project(path: ':com.bluecats.sdk', configuration: 'release')
+    withsrcDebugCompile project(path: ':com.bluecats.sdk', configuration: 'debug')
+
+    //when build with aar file, copy *.aar to app/libs, and uncomment the following lines.
+//    withaarReleaseCompile 'com.bluecats.sdk:com.bluecats.sdk:release@aar'
+//    withaarDebugCompile 'com.bluecats.sdk:com.bluecats.sdk:debug@aar'
+}
+

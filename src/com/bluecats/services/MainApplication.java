@@ -10,7 +10,7 @@ import android.os.Bundle;
 public class MainApplication extends Application {
 	protected static final String TAG = "MainApplication";
 	
-	private static final String BLUECATS_APP_TOKEN = "BLUECATS_APP_TOKEN";
+	private static final String BLUECATS_APP_TOKEN = "2cac72de-8100-4b19-b601-26290e98fb13";
 
 	@Override
 	public void onCreate() {
