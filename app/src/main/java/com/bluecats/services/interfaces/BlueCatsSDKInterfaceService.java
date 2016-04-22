@@ -103,7 +103,7 @@ public class BlueCatsSDKInterfaceService extends Service {
 		filters.add(BCEventFilter.filterByMinTimeIntervalBetweenTriggers(5000)); // trigger event every 5 seconds
 
 		BCTrigger trigger = new BCTrigger(EVENT_HEARD_BEACON, filters);
-		trigger.setRepeatCount(Integer.MAX_VALUE);
+		trigger.setRepeatCount(3/*Integer.MAX_VALUE*/);
 		BCEventManager.getInstance().monitorEventWithTrigger(trigger, mEventManagerCallback);
 
 		// start the service and keep running even if activity is destroyed
