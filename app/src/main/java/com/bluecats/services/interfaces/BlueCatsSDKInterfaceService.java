@@ -90,7 +90,7 @@ public class BlueCatsSDKInterfaceService extends Service {
 
 		// add any options here
 		Map<String, String> options = new HashMap<String, String>();
-//		options.put(BlueCatsSDK.BC_OPTION_CROWD_SOURCE_BEACON_UPDATES, "false");
+//		options.put(BlueCatsSDK.BC_OPTION_ENERGY_SAVER_SCAN_STRATEGY, "false");
 		BlueCatsSDK.setOptions(options);
 
 		BlueCatsSDK.startPurringWithAppToken(getApplicationContext(), appToken);
@@ -103,7 +103,7 @@ public class BlueCatsSDKInterfaceService extends Service {
 		filters.add(BCEventFilter.filterByMinTimeIntervalBetweenTriggers(5000)); // trigger event every 5 seconds
 
 		BCTrigger trigger = new BCTrigger(EVENT_HEARD_BEACON, filters);
-		trigger.setRepeatCount(3/*Integer.MAX_VALUE*/);
+		trigger.setRepeatCount(Integer.MAX_VALUE);
 		BCEventManager.getInstance().monitorEventWithTrigger(trigger, mEventManagerCallback);
 
 		// start the service and keep running even if activity is destroyed
