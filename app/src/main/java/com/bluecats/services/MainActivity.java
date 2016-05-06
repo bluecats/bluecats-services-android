@@ -47,8 +47,6 @@ public class MainActivity extends Activity {
 		
 		BlueCatsSDKInterfaceService.registerBlueCatsSDKServiceCallback(MainActivity.this.getClass().getName(), mBlueCatsSDKInterfaceServiceCallback);
 		
-		BlueCatsSDKInterfaceService.startUpdatingMicroLocation();
-		
 		BlueCatsSDKInterfaceService.didEnterForeground();
 	}
 	
@@ -57,9 +55,7 @@ public class MainActivity extends Activity {
 		super.onPause();
 		
 		BlueCatsSDKInterfaceService.unregisterBlueCatsSDKServiceCallback(MainActivity.this.getClass().getName());
-		
-		BlueCatsSDKInterfaceService.stopUpdatingMicroLocation();
-		
+
 		BlueCatsSDKInterfaceService.didEnterBackground();
 	}
 	
@@ -68,8 +64,6 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 		
 		BlueCatsSDKInterfaceService.unregisterBlueCatsSDKServiceCallback(MainActivity.this.getClass().getName());
-		
-		BlueCatsSDKInterfaceService.stopUpdatingMicroLocation();
 		
 		BlueCatsSDKInterfaceService.didEnterBackground();
 	}

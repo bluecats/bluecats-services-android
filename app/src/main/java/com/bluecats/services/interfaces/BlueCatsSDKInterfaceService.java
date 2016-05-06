@@ -16,6 +16,8 @@ import java.util.WeakHashMap;
 import java.util.Map.Entry;
 
 import com.bluecats.sdk.BCBeacon;
+import com.bluecats.sdk.BCBeaconManager;
+import com.bluecats.sdk.BCBeaconManagerCallback;
 import com.bluecats.sdk.BCEventFilter;
 import com.bluecats.sdk.BCEventManager;
 import com.bluecats.sdk.BCEventManagerCallback;
@@ -40,6 +42,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -50,6 +53,9 @@ public class BlueCatsSDKInterfaceService extends Service {
 
 	private static final String EVENT_HEARD_BEACON = "EVENT_HEARD_BEACON";
 	private static final int EVENT_LOCAL_NOTIFICATION_ID = 111;
+
+	private BCBeaconManager mBeaconManager;
+	private MyBCBeaconManagerCallback mBeaconManagerCallback;
 
 	private static WeakHashMap<String, IBlueCatsSDKInterfaceServiceCallback> mBlueCatsSDKServiceCallbacks;
 	private static WeakHashMap<String, IBlueCatsSDKInterfaceServiceCallback> getBlueCatsSDKServiceCallbacks() {
@@ -90,7 +96,9 @@ public class BlueCatsSDKInterfaceService extends Service {
 
 		// add any options here
 		Map<String, String> options = new HashMap<String, String>();
-//		options.put(BlueCatsSDK.BC_OPTION_ENERGY_SAVER_SCAN_STRATEGY, "false");
+		//options.put(BlueCatsSDK.BC_OPTION_CROWD_SOURCE_BEACON_UPDATES, "false");
+		//add any of your own options
+
 		BlueCatsSDK.setOptions(options);
 
 		BlueCatsSDK.startPurringWithAppToken(getApplicationContext(), appToken);
@@ -106,6 +114,17 @@ public class BlueCatsSDKInterfaceService extends Service {
 		trigger.setRepeatCount(Integer.MAX_VALUE);
 		BCEventManager.getInstance().monitorEventWithTrigger(trigger, mEventManagerCallback);
 
+		if (mBeaconManager == null) {
+			mBeaconManagerCallback = new MyBCBeaconManagerCallback();
+			mBeaconManager = new BCBeaconManager(mBeaconManagerCallback);
+
+			//...
+			//...
+			//Important:
+			// set mBeaconManagerCallback to null to stop monitoring on mBeaconManager
+
+
+		}
 		// start the service and keep running even if activity is destroyed
 		return START_STICKY;
 	}
@@ -114,25 +133,10 @@ public class BlueCatsSDKInterfaceService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 
+		mBeaconManager = null;
+		mBeaconManagerCallback = null;
+
 		Log.d(TAG, "onDestroy");
-	}
-
-	/**
-	 * Start updating micro location to begin ranging beacons
-	 */
-	public static void startUpdatingMicroLocation() {
-		Log.d(TAG, "startUpdatingMicroLocation");
-
-		BCMicroLocationManager.getInstance().startUpdatingMicroLocation(mMicroLocationManagerCallback);
-	}
-
-	/**
-	 * Stop updating micro location to stop ranging beacons
-	 */
-	public static void stopUpdatingMicroLocation() {
-		Log.d(TAG, "stopUpdatingMicroLocation");
-
-		BCMicroLocationManager.getInstance().stopUpdatingMicroLocation(mMicroLocationManagerCallback);
 	}
 
 	/**
@@ -232,11 +236,13 @@ public class BlueCatsSDKInterfaceService extends Service {
 		}
 	};
 
-	private static BCMicroLocationManagerCallback mMicroLocationManagerCallback = new BCMicroLocationManagerCallback() {
-		@Override
-		public void onDidEnterSite(BCSite site) {
-			Log.d(TAG, "onDidEnterSite");
-			
+	/**
+	 * all callbacks in BCBeaconManagerCallback are called in main thread.
+	 */
+	class MyBCBeaconManagerCallback extends BCBeaconManagerCallback {
+		public void didEnterSite(BCSite site) {
+			Log.d(TAG, "didEnterSite "+site.getName());
+
 			// handle logic here or return the event to your activity
 			Iterator<Entry<String, IBlueCatsSDKInterfaceServiceCallback>> iterator = getBlueCatsSDKServiceCallbacks().entrySet().iterator();
 			while (iterator.hasNext()) {
@@ -247,12 +253,11 @@ public class BlueCatsSDKInterfaceService extends Service {
 					callback.onDidEnterSite(site);
 				}
 			}
-		}
+		};
 
-		@Override
-		public void onDidExitSite(final BCSite site) {
-			Log.d(TAG, "onDidExitSite");
-			
+		public void didExitSite(BCSite site) {
+			Log.d(TAG, "didExitSite "+site.getName());
+
 			// handle logic here or return the event to your activity
 			Iterator<Entry<String, IBlueCatsSDKInterfaceServiceCallback>> iterator = getBlueCatsSDKServiceCallbacks().entrySet().iterator();
 			while (iterator.hasNext()) {
@@ -263,67 +268,8 @@ public class BlueCatsSDKInterfaceService extends Service {
 					callback.onDidExitSite(site);
 				}
 			}
-		}
+		};
 
-		@Override
-		public void onDidRangeBeaconsForSiteID(final BCSite site, final List<BCBeacon> beacons) {
-			Log.d(TAG, "onDidRangeBeaconsForSiteID");
-			
-			// handle logic here or return the event to your activity
-			Iterator<Entry<String, IBlueCatsSDKInterfaceServiceCallback>> iterator = getBlueCatsSDKServiceCallbacks().entrySet().iterator();
-			while (iterator.hasNext()) {
-				Entry<String, IBlueCatsSDKInterfaceServiceCallback> entry = iterator.next();
-
-				IBlueCatsSDKInterfaceServiceCallback callback = entry.getValue();
-				if (callback != null) {
-					callback.onDidRangeBeaconsForSiteID(site, beacons);
-				}
-			}
-		}
-
-		@Override
-		public void onDidUpdateMicroLocation(final List<BCMicroLocation> microLocations) {
-			Log.d(TAG, "onDidUpdateMicroLocation");
-			
-			// handle logic here or return the event to your activity
-			Iterator<Entry<String, IBlueCatsSDKInterfaceServiceCallback>> iterator = getBlueCatsSDKServiceCallbacks().entrySet().iterator();
-			while (iterator.hasNext()) {
-				Entry<String, IBlueCatsSDKInterfaceServiceCallback> entry = iterator.next();
-
-				IBlueCatsSDKInterfaceServiceCallback callback = entry.getValue();
-				if (callback != null) {
-					callback.onDidUpdateMicroLocation(microLocations);
-				}
-			}
-		}
-
-		@Override
-		public void onDidUpdateNearbySites(final List<BCSite> sites) {
-			Log.d(TAG, "onDidUpdateNearbySites");
-			
-			// handle logic here or return the event to your activity
-			Iterator<Entry<String, IBlueCatsSDKInterfaceServiceCallback>> iterator = getBlueCatsSDKServiceCallbacks().entrySet().iterator();
-			while (iterator.hasNext()) {
-				Entry<String, IBlueCatsSDKInterfaceServiceCallback> entry = iterator.next();
-
-				IBlueCatsSDKInterfaceServiceCallback callback = entry.getValue();
-				if (callback != null) {
-					callback.onDidUpdateNearbySites(sites);
-				}
-			}
-		}
-
-		@Override
-		public void didBeginVisitForBeaconsWithSerialNumbers(List<String> arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void didEndVisitForBeaconsWithSerialNumbers(List<String> arg0) {
-			// TODO Auto-generated method stub
-			
-		}
 	};
 
 	public class LocalBinder extends Binder {

@@ -33,15 +33,11 @@ android {
 
 dependencies {
     testCompile 'junit:junit:4.12'
-//        compile 'com.bluecats:bluecats-android-sdk:1.13.8-ea'
-    compile project(path: ':bluecats-android-sdk', configuration: 'debug')
+    compile 'com.bluecats:bluecats-android-sdk:2.0.0-rc-1'
+//    compile project(path: ':bluecats-android-sdk', configuration: 'debug')
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.google.android.gms:play-services:8.4.0'
     compile 'ch.acra:acra:4.8.5'
-    compile 'com.google.android.gms:play-services-ads:8.4.0'
-    compile 'com.google.android.gms:play-services-auth:8.4.0'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
 }
 
 
