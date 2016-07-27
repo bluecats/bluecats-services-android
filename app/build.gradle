@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
 
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
     lintOptions {
         disable 'InvalidPackage'
     }
@@ -33,7 +33,7 @@ android {
 
 dependencies {
     testCompile 'junit:junit:4.12'
-    compile 'com.bluecats:bluecats-android-sdk:2.0.0-rc-1'
+    compile 'com.bluecats:bluecats-android-sdk:2.0.1'
 //    compile project(path: ':bluecats-android-sdk', configuration: 'debug')
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.google.code.gson:gson:2.2.4'
