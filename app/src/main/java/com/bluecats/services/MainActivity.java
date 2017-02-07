@@ -1,15 +1,10 @@
 package com.bluecats.services;
 
 import java.net.URL;
-import java.util.List;
+import java.util.*;
 
-import com.bluecats.sdk.BCBeacon;
-import com.bluecats.sdk.BCBeaconManager;
-import com.bluecats.sdk.BCBeaconManagerCallback;
-import com.bluecats.sdk.BCMicroLocation;
-import com.bluecats.sdk.BCSite;
-import com.bluecats.sdk.BCTriggeredEvent;
-import com.bluecats.sdk.BlueCatsSDK;
+import com.bluecats.sdk.*;
+//import com.bluecats.sdk.BCBeaconManagerCallback;
 import com.bluecats.services.interfaces.BlueCatsSDKInterfaceService;
 import com.bluecats.services.interfaces.IBlueCatsSDKInterfaceServiceCallback;
 
@@ -32,7 +27,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private Button mButton;
 	private Button mButton2;
 
-	BCBeaconManager mBCBeaconManager;
+	//BCBeaconManager mBCBeaconManager;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,11 +40,25 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		mButton2.setOnClickListener(this);
 
 		MainApplication.runSDK(this.getApplicationContext());
-		mBCBeaconManager = new BCBeaconManager();
-		mBCBeaconManager.registerCallback(mCallback);
+		//mBCBeaconManager = new BCBeaconManager();
+		//mBCBeaconManager.registerCallback(mCallback);
 
+		List<IBCEventFilter> filters = new ArrayList<>();
+		filters.add(BCEventFilter.filterByClosestBeacon());
+
+		BCTrigger trigger = new BCTrigger("TEST_TRIGGER", filters);
+		trigger.setRepeatCount(Integer.MAX_VALUE);
+
+		BCEventManager e = BCEventManager.getInstance();
+		e.monitorEventWithTrigger(trigger, new BCEventManagerCallback() {
+			@Override
+			public void onTriggeredEvent(BCTriggeredEvent triggeredEvent) {
+				Log.d(TAG, triggeredEvent.getEvent().getEventIdentifier());
+			}
+		});
 	}
 
+	/*
 	BCBeaconManagerCallback mCallback = new BCBeaconManagerCallback() {
 		@Override
 		public void didEnterSite(BCSite site) {
@@ -123,6 +132,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 			Log.d(TAG, "didDiscoverEddystoneURL "+eddystoneUrl.toString());
 		}
 	};
+	*/
 
 	private String getBeaconNames(List<BCBeacon> beacons) {
 		StringBuilder sb = new StringBuilder();
@@ -172,7 +182,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	protected void onDestroy() {
 		super.onDestroy();
 		Log.d(TAG, "onDestroy");
-		mBCBeaconManager.unregisterCallback(mCallback);
+		//mBCBeaconManager.unregisterCallback(mCallback);
 		BlueCatsSDKInterfaceService.unregisterBlueCatsSDKServiceCallback(MainActivity.this.getClass().getName());
 		
 		BlueCatsSDKInterfaceService.didEnterBackground();

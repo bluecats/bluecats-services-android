@@ -1,7 +1,7 @@
 package com.bluecats.services;
 
 import com.bluecats.sdk.BCBeacon;
-import com.bluecats.sdk.BCBeaconManagerCallback;
+//import com.bluecats.sdk.BCBeaconManagerCallback;
 import com.bluecats.sdk.BCSite;
 
 import android.util.Log;
@@ -12,9 +12,10 @@ import java.util.List;
 /**
  * Created by henrycheng on 18/07/2016.
  */
-public class MyBeaconManagerCallback extends BCBeaconManagerCallback {
+public class MyBeaconManagerCallback {
     private static final String TAG = "MyBeaconManagerCallback";
 
+    /*
     @Override
     public void didEnterSite(BCSite site) {
         super.didEnterSite(site);
@@ -97,5 +98,5 @@ public class MyBeaconManagerCallback extends BCBeaconManagerCallback {
         sb.append(']');
         return sb.toString();
     }
-
+    */
 }

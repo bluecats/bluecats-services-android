@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bluecats-android-sdk-release/bluecats-android-sdk-release.iml" filepath="$PROJECT_DIR$/bluecats-android-sdk-release/bluecats-android-sdk-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/bluecats-services-android.iml" filepath="$PROJECT_DIR$/bluecats-services-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/services-android.iml" filepath="$PROJECT_DIR$/services-android.iml" />
     </modules>
   </component>
 </project>

@@ -73,7 +73,7 @@ public class BlueCatsSDKInterfaceService extends Service {
 	}
 
 	private void checkIdentifier() {
-		Log.d(TAG, "device_identifier: "+BlueCatsSDK.getDeviceIdentifier(this));
+		//Log.d(TAG, "device_identifier: "+BlueCatsSDK.getDeviceIdentifier(this));
 	}
 	@Override
 	public void onCreate() {
